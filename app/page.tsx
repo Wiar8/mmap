@@ -31,7 +31,12 @@ export default function Home() {
           topic: data.topic,
           description: data.description,
           mapType: data.mapType,
-          images: data.images.map((img) => img.base64),
+          images: data.images
+            .filter((img) => img.base64 && img.topic.trim()) // Only include images with both base64 and topic
+            .map((img) => ({
+              base64: img.base64!,
+              topic: img.topic.trim(),
+            })),
         }),
       });
 
