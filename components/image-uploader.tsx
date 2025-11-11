@@ -110,7 +110,7 @@ export function ImageUploader({
                 For mind maps: Add topic/keyword for each image
               </p>
               <p className="text-xs text-gray-400 mt-1">
-                Images will be automatically resized to 80x80px
+                Images will be automatically resized to 80x80px (transparency preserved)
               </p>
             </div>
           )}
