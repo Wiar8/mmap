@@ -1,36 +1,119 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MMAP - AI-Powered Mind Map Generator
+
+Generate beautiful mind maps, concept maps, flowcharts, and sequence diagrams using AI. Built with Next.js, Vercel AI SDK, and Google Gemini.
+
+## Features
+
+- **AI-Powered Generation**: Automatically create diagrams from text descriptions
+- **Multiple Diagram Types**: Mind maps, concept maps, flowcharts, and sequence diagrams
+- **Image Support**: Upload images to provide additional context (optional)
+- **PNG Export**: Download your diagrams as high-quality PNG files
+- **Responsive Design**: Works seamlessly on desktop and mobile devices
+- **Modern UI**: Clean, intuitive interface built with shadcn/ui and Tailwind CSS
+
+## Tech Stack
+
+- **Frontend**: Next.js 15, React 19, TypeScript
+- **UI**: shadcn/ui + Tailwind CSS
+- **AI**: Vercel AI SDK with Google Gemini
+- **Diagrams**: Mermaid.js
+- **Export**: html2canvas
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js 18+ or pnpm installed
+- Google Gemini API key ([Get one here](https://aistudio.google.com/app/apikey))
+
+### Installation
+
+1. Install dependencies:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Set up environment variables:
+   - Copy `.env.local.example` to `.env.local` or edit the existing `.env.local`
+   - Add your Google Gemini API key:
+```bash
+GOOGLE_GENERATIVE_AI_API_KEY=your_actual_api_key_here
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Start the development server:
+```bash
+pnpm dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-## Learn More
+## Usage
 
-To learn more about Next.js, take a look at the following resources:
+1. **Enter a Topic**: Describe what you want to visualize (e.g., "Machine Learning Concepts")
+2. **Add Description** (optional): Provide more details to help AI generate a better diagram
+3. **Select Diagram Type**: Choose from mind map, concept map, flowchart, or sequence diagram
+4. **Upload Images** (optional): Add reference images to provide visual context
+5. **Generate**: Click "Generate Diagram" and watch AI create your visualization
+6. **Export**: Download your diagram as a PNG file
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Example Topics
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- "Machine Learning fundamentals and key algorithms"
+- "Project management workflow from planning to deployment"
+- "Biology: Cell structure and organelles"
+- "Web development technologies and their relationships"
+- "Software development lifecycle phases"
 
-## Deploy on Vercel
+## Project Structure
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+mmap/
+├── app/
+│   ├── api/generate-map/    # API endpoint for AI generation
+│   ├── layout.tsx            # Root layout
+│   ├── page.tsx              # Main application page
+│   └── globals.css           # Global styles
+├── components/
+│   ├── ui/                   # shadcn/ui components
+│   ├── map-input-form.tsx    # Input form component
+│   ├── map-display.tsx       # Mermaid diagram renderer
+│   ├── image-uploader.tsx    # Image upload component
+│   └── export-button.tsx     # PNG export component
+├── lib/
+│   ├── utils.ts              # Utility functions
+│   ├── ai-client.ts          # Vercel AI SDK integration
+│   └── diagram-converter.ts  # Mermaid syntax validation
+└── types/
+    └── index.ts              # TypeScript type definitions
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Development
+
+- `pnpm dev` - Start development server
+- `pnpm build` - Build for production
+- `pnpm start` - Run production server
+- `pnpm lint` - Run ESLint
+
+## How It Works
+
+1. User enters topic and preferences in the form
+2. Frontend sends request to `/api/generate-map` endpoint
+3. API calls Google Gemini using Vercel AI SDK with a structured prompt
+4. AI generates valid Mermaid.js syntax based on the diagram type
+5. Response is validated and cleaned
+6. Mermaid.js renders the diagram in the browser
+7. User can export the diagram as a PNG file
+
+## Supported Diagram Types
+
+### Mind Map
+Hierarchical visualization of ideas branching from a central concept.
+
+### Concept Map
+Network-style diagram showing relationships between concepts with labeled connections.
+
+### Flowchart
+Step-by-step process flow with decision points and paths.
+
+### Sequence Diagram
+Interaction between entities over time, useful for workflows and communication patterns.

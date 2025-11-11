@@ -1,65 +1,102 @@
-import Image from "next/image";
+'use client';
+
+import { useState, useRef } from 'react';
+import { MapInputForm } from '@/components/map-input-form';
+import { MapDisplay } from '@/components/map-display';
+import { ExportButton } from '@/components/export-button';
+import type { ImageUpload, MapType } from '@/types';
 
 export default function Home() {
+  const [mermaidCode, setMermaidCode] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const diagramRef = useRef<HTMLDivElement>(null);
+
+  const handleGenerate = async (data: {
+    topic: string;
+    description: string;
+    mapType: MapType;
+    images: ImageUpload[];
+  }) => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch('/api/generate-map', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          topic: data.topic,
+          description: data.description,
+          mapType: data.mapType,
+          images: data.images.map((img) => img.base64),
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setMermaidCode(result.mermaidCode);
+      } else {
+        setError(result.error || 'Failed to generate diagram');
+      }
+    } catch (err) {
+      console.error('Error:', err);
+      setError('An error occurred while generating the diagram. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      {/* Header */}
+      <header className="border-b bg-white/80 backdrop-blur-sm">
+        <div className="container mx-auto px-4 py-6">
+          <h1 className="text-3xl font-bold text-gray-900">MMAP</h1>
+          <p className="text-gray-600 mt-1">AI-Powered Mind Map Generator</p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </header>
+
+      {/* Main Content */}
+      <main className="container mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Left Column - Input Form */}
+          <div className="space-y-4">
+            <MapInputForm onGenerate={handleGenerate} isLoading={isLoading} />
+
+            {error && (
+              <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+                {error}
+              </div>
+            )}
+          </div>
+
+          {/* Right Column - Diagram Display */}
+          <div className="space-y-4">
+            <div ref={diagramRef}>
+              <MapDisplay mermaidCode={mermaidCode} />
+            </div>
+
+            {mermaidCode && (
+              <ExportButton
+                targetRef={diagramRef}
+                filename="mmap-diagram"
+                disabled={isLoading}
+              />
+            )}
+          </div>
         </div>
       </main>
+
+      {/* Footer */}
+      <footer className="mt-16 border-t bg-white/80 backdrop-blur-sm">
+        <div className="container mx-auto px-4 py-6 text-center text-gray-600 text-sm">
+          <p>Powered by Vercel AI SDK and Google Gemini</p>
+        </div>
+      </footer>
     </div>
   );
 }

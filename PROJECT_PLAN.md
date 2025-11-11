@@ -25,8 +25,8 @@ MMAP is a web application that helps users create mind maps, mix maps, and conce
 
 ### Backend
 - **API Routes:** Next.js API Routes (built-in)
-- **AI Integration:** Claude API (Anthropic) or OpenAI GPT-4
-- **Environment:** Node.js
+- **AI Integration:** Vercel AI SDK with Google Gemini
+- **Environment:** Node.js / Edge Runtime
 
 ### Development Tools
 - **Package Manager:** pnpm
@@ -77,59 +77,60 @@ mmap/
 
 ## Implementation Plan
 
-### Phase 1: Project Setup
+### Phase 1: Project Setup ✅
 1. ✅ Initialize Next.js project with TypeScript and Tailwind
-2. Install and configure shadcn/ui
-3. Install additional dependencies:
+2. ✅ Install and configure shadcn/ui
+3. ✅ Install additional dependencies:
    - Mermaid.js for diagram rendering
    - html2canvas for PNG export
    - react-dropzone for image uploads
-   - AI SDK (Anthropic or OpenAI)
-4. Set up environment variables for API keys
+   - Vercel AI SDK with Google Gemini
+4. ✅ Set up environment variables for API keys
 
-### Phase 2: Core Components
-1. **Map Input Form Component** (`components/map-input-form.tsx`)
+### Phase 2: Core Components ✅
+1. ✅ **Map Input Form Component** (`components/map-input-form.tsx`)
    - Text area for subject/information input
-   - Map type selector (mind map, concept map, UML)
+   - Map type selector (mind map, concept map, flowchart, sequence)
    - Image upload area (optional)
    - Generate button
 
-2. **Image Uploader Component** (`components/image-uploader.tsx`)
+2. ✅ **Image Uploader Component** (`components/image-uploader.tsx`)
    - Drag-and-drop interface using react-dropzone
    - Image preview
    - Multiple image support
 
-3. **Map Display Component** (`components/map-display.tsx`)
+3. ✅ **Map Display Component** (`components/map-display.tsx`)
    - Mermaid.js integration
    - Responsive diagram rendering
    - Loading state while generating
 
-4. **Export Button Component** (`components/export-button.tsx`)
+4. ✅ **Export Button Component** (`components/export-button.tsx`)
    - PNG export using html2canvas
    - Download trigger
 
-### Phase 3: API Integration
-1. **AI API Route** (`app/api/generate-map/route.ts`)
+### Phase 3: API Integration ✅
+1. ✅ **AI API Route** (`app/api/generate-map/route.ts`)
    - Receive user input (text, images, map type)
    - Process images (if provided) - convert to base64 or URLs
-   - Call AI API with structured prompt
+   - Call Vercel AI SDK with Google Gemini
    - Parse AI response into Mermaid syntax
    - Return structured diagram data
 
-2. **AI Client Library** (`lib/ai-client.ts`)
-   - Configure API client (Claude or OpenAI)
+2. ✅ **AI Client Library** (`lib/ai-client.ts`)
+   - Configure Vercel AI SDK with Google Gemini
    - Handle API requests and responses
    - Error handling and retries
 
-3. **Diagram Converter** (`lib/diagram-converter.ts`)
-   - Convert AI-generated structure to Mermaid syntax
+3. ✅ **Diagram Converter** (`lib/diagram-converter.ts`)
+   - Validate and clean Mermaid syntax
    - Support different diagram types:
      - Mind maps: `mindmap` syntax
      - Concept maps: `graph` syntax
-     - UML diagrams: `classDiagram`, `sequenceDiagram`, etc.
+     - Flowcharts: `flowchart` syntax
+     - Sequence diagrams: `sequenceDiagram` syntax
 
-### Phase 4: Main Page Implementation
-1. **Home Page** (`app/page.tsx`)
+### Phase 4: Main Page Implementation ✅
+1. ✅ **Home Page** (`app/page.tsx`)
    - Layout with input form on left/top
    - Map display on right/bottom
    - Responsive design for mobile/desktop
@@ -188,29 +189,26 @@ mindmap
 Create `.env.local` file:
 
 ```
-# AI API Configuration
-ANTHROPIC_API_KEY=your_claude_api_key
-# OR
-OPENAI_API_KEY=your_openai_api_key
-
-# Optional: Choose which AI to use
-AI_PROVIDER=anthropic  # or 'openai'
+# Google Gemini API Configuration
+# Get your API key from: https://aistudio.google.com/app/apikey
+GOOGLE_GENERATIVE_AI_API_KEY=your_gemini_api_key_here
 ```
 
 ---
 
-## Dependencies to Install
+## Dependencies Installed
 
 ```json
 {
   "dependencies": {
-    "next": "^14.0.0",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0",
-    "@anthropic-ai/sdk": "^0.20.0",
-    "mermaid": "^10.9.0",
+    "next": "^15.x",
+    "react": "^19.x",
+    "react-dom": "^19.x",
+    "ai": "^5.0.90",
+    "@ai-sdk/google": "^2.0.30",
+    "mermaid": "^11.12.1",
     "html2canvas": "^1.4.1",
-    "react-dropzone": "^14.2.3",
+    "react-dropzone": "^14.3.8",
     "lucide-react": "latest",
     "class-variance-authority": "latest",
     "clsx": "latest",
